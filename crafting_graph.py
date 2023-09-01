@@ -23,10 +23,14 @@ def find_cheapest_way(materials_dict, target_item, verbose=False):
     # Find the cheapest way to make the target item
     smallest_node = [node for node in G.nodes() if G.in_degree(node) == 0]
     groceries_list = {}
+    total_cost = 0
     for node in smallest_node:
         cheapest_way = nx.shortest_path(G, source=node, target=target_item, weight='cost')
         cost = nx.shortest_path_length(G, source=node, target=target_item, weight='cost')
         groceries_list[cheapest_way[0]] = {'cost': cost, 'step': cheapest_way}
+        total_cost += cost
+    groceries_list['total_cost'] = total_cost
+    
     # Visualization
     if verbose:
         pos = nx.spring_layout(G, seed=42)
