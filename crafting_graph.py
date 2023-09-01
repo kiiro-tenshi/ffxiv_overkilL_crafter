@@ -27,7 +27,11 @@ def find_cheapest_way(materials_dict, target_item, verbose=False):
     for node in smallest_node:
         cheapest_way = nx.shortest_path(G, source=node, target=target_item, weight='cost')
         cost = nx.shortest_path_length(G, source=node, target=target_item, weight='cost')
-        groceries_list[cheapest_way[0]] = {'cost': cost, 'step': cheapest_way}
+        #determine what to buy
+        for i in range(len(cheapest_way)-1):
+            edge_data = G.get_edge_data(cheapest_way[i], cheapest_way[i+1])
+            if edge_data['cost'] != 0:
+                groceries_list[cheapest_way[i]] = {'cost': cost, 'step': cheapest_way[i:]}
         total_cost += cost
     groceries_list['total_cost'] = total_cost
     
