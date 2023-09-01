@@ -8,7 +8,7 @@ Created on Fri Sep  1 09:42:30 2023
 import networkx as nx
 import matplotlib.pyplot as plt
 
-def create_recipe_graph(materials_dict, verbose=False):
+def create_recipe_graph(materials_dict, target_item, verbose=False):
     G = nx.DiGraph()
 
     for material in materials_dict:
@@ -16,10 +16,14 @@ def create_recipe_graph(materials_dict, verbose=False):
 
     for material, ingredients in materials_dict.items():
         for ingredient, cost in ingredients.items():
-            G.add_edge(ingredient, material, cost=cost)
+            if material != target_item:
+                G.add_edge(ingredient, material, cost=0)
+            else:
+                G.add_edge(ingredient, material, cost=cost)
+            G.add_edge(ingredient, target_item, cost=cost)
 
     if verbose:
-        pos = nx.spring_layout(G, seed=1)
+        pos = nx.spring_layout(G, seed=42)
         nx.draw(G, pos, with_labels=True, node_size=800, node_color='skyblue', font_size=10, font_color='black')
         labels = nx.get_edge_attributes(G, 'cost')
         nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
@@ -41,4 +45,5 @@ if __name__ == '__main__':
         'Blood Tomato': {},
         'Earthbreak Aethersand':{},
     }
-    G = create_recipe_graph(materials_dict, verbose=True)
+    target_item = 'Baked Eggplant'
+    G = create_recipe_graph(materials_dict, target_item, verbose=True)
