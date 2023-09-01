@@ -8,9 +8,10 @@ Created on Fri Sep  1 09:42:30 2023
 import networkx as nx
 import matplotlib.pyplot as plt
 
-def create_recipe_graph(materials_dict, target_item, verbose=False):
+def find_cheapest_way(materials_dict, target_item, verbose=False):
     G = nx.DiGraph()
 
+    # Create the directed graph as before
     for material, ingredients in materials_dict.items():
         for ingredient, cost in ingredients.items():
             if material != target_item:
@@ -19,6 +20,14 @@ def create_recipe_graph(materials_dict, target_item, verbose=False):
                 G.add_edge(ingredient, material, cost=cost)
             G.add_edge(ingredient, target_item, cost=cost)
 
+    # Find the cheapest way to make the target item
+    smallest_node = [node for node in G.nodes() if G.in_degree(node) == 0]
+    groceries_list = {}
+    for node in smallest_node:
+        cheapest_way = nx.shortest_path(G, source=node, target=target_item, weight='cost')
+        cost = nx.shortest_path_length(G, source=node, target=target_item, weight='cost')
+        groceries_list[cheapest_way[0]] = {'cost': cost, 'step': cheapest_way}
+    # Visualization
     if verbose:
         pos = nx.spring_layout(G, seed=42)
         nx.draw(G, pos, with_labels=True, node_size=800, node_color='skyblue', font_size=10, font_color='black')
@@ -26,14 +35,16 @@ def create_recipe_graph(materials_dict, target_item, verbose=False):
         nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
         plt.show()
 
-    return G
-        
+    return groceries_list
+
 if __name__ == '__main__':
     materials_dict = {
-        'Baked Eggplant': {'Dark Eggplant': 2 ,'Garlean Cheese': 5, 'Frantoio Oil': 5, 
+        'Baked Eggplant': {'Dark Eggplant': 2, 'Garlean Cheese': 5, 'Frantoio Oil': 5,
                            'Blood Tomato': 2, 'Giant Popoto': 1, 'Earthbreak Aethersand': 10},
-        'Garlean Cheese': {'Ovibos Milk': 2},
+        'Garlean Cheese': {'Ovibos Milk': 10},
         'Frantoio Oil': {'Frantoio': 2}
-        }
+    }
     target_item = 'Baked Eggplant'
-    G = create_recipe_graph(materials_dict, target_item, verbose=True)
+
+    groceries_list = find_cheapest_way(materials_dict, target_item, verbose=True)
+    print(groceries_list)
