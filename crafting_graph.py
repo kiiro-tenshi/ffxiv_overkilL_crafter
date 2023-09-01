@@ -11,9 +11,6 @@ import matplotlib.pyplot as plt
 def create_recipe_graph(materials_dict, target_item, verbose=False):
     G = nx.DiGraph()
 
-    for material in materials_dict:
-        G.add_node(material)
-
     for material, ingredients in materials_dict.items():
         for ingredient, cost in ingredients.items():
             if material != target_item:
@@ -30,20 +27,13 @@ def create_recipe_graph(materials_dict, target_item, verbose=False):
         plt.show()
 
     return G
-
         
 if __name__ == '__main__':
     materials_dict = {
         'Baked Eggplant': {'Dark Eggplant': 2 ,'Garlean Cheese': 5, 'Frantoio Oil': 5, 
                            'Blood Tomato': 2, 'Giant Popoto': 1, 'Earthbreak Aethersand': 10},
         'Garlean Cheese': {'Ovibos Milk': 2},
-        'Frantoio Oil': {'Frantoio': 2},
-        'Dark Eggplant': {},
-        'Giant Popoto': {},
-        'Ovibos Milk': {},
-        'Frantoio': {},
-        'Blood Tomato': {},
-        'Earthbreak Aethersand':{},
-    }
+        'Frantoio Oil': {'Frantoio': 2}
+        }
     target_item = 'Baked Eggplant'
     G = create_recipe_graph(materials_dict, target_item, verbose=True)
