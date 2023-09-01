@@ -7,20 +7,41 @@ Created on Fri Sep  1 01:47:18 2023
 import requests, json
 from datetime import datetime, timezone, timedelta
 import statistics
-
-ITEM_TYPE = 'Item'
-URL_TYPE = 'UrlType'
+import constants
 
 def get_item_id(item_name):
     '''to get item id as universalis need item id for the get request'''
     response = json.loads(requests.get(f'https://xivapi.com/search?string={item_name}').text)['Results']
-    response = [x for x in response if x[URL_TYPE] == ITEM_TYPE]
+    response = [x for x in response if x[constants.URL_TYPE] == constants.ITEM_TYPE]
     ids = {}
-
     for result in response:
         ids[result['Name']] = result['ID']
     item_id = ids[item_name]
     return str(item_id)
+
+def get_recipe_id(item_name):
+    '''this *does* assume the item name is correct or unexpected behaviour may occur!'''
+    response = json.loads(requests.get(f'https://xivapi.com/search?string={item_name}').text)['Results']
+    response = [x for x in response if x[constants.URL_TYPE] == constants.RECIPE_TYPE]
+    ids = {}
+    for result in response:
+        ids[result['Name']] = result['ID']
+    item_id = ids[item_name]
+    return str(item_id)
+
+def fetch_recipe_data(recipe_id):
+    response = json.loads(requests.get(f'https://xivapi.com/recipe/{recipe_id}?').text)
+    '''Notepad time, each mat may contain a subrecipe, so treat it as a tree rooted at the requested item and work down
+    from there, if there is no result returned then assume it is a raw material and stop there'''
+    ingredients_quantity = []
+    for i in range(constants.MAX_QUANTITY_INGREDIENTS):
+        if response[constants.ITEM_INGREDIENT + str(i)] is not None:
+            idx_item_id = response[constants.ITEM_INGREDIENT + str(i)][constants.ITEM_ID]
+        else:
+            idx_item_id = -1
+        ingredient_item_quantity_pair = (idx_item_id, response[constants.AMOUNT_INGREDIENT + str(i)])
+        ingredients_quantity.append(ingredient_item_quantity_pair)
+    return ingredients_quantity
 
 def fetch_item_price(item_id, time_window_minutes):
     world_list = ['Jenova', 'Adamantoise', 'Cactuar', 'Faerie', 'Gilgamesh', 'Midgardsormr', 'Sargatanas', 'Siren']
@@ -47,6 +68,7 @@ def fetch_item_price(item_id, time_window_minutes):
     return price_dict
 
 if __name__ == '__main__':
-    item_id = get_item_id('Ovibos Milk')
-    price_dict = fetch_item_price(item_id, 30)
+    #item_id = get_item_id('Ovibos Milk')
+   #price_dict = fetch_item_price(item_id, 30)
+    fetch_recipe_data(get_recipe_id("Baked Eggplant"))
     
