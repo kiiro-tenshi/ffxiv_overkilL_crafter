@@ -8,11 +8,16 @@ import requests, json
 from datetime import datetime, timezone, timedelta
 import statistics
 
+ITEM_TYPE = 'Item'
+URL_TYPE = 'UrlType'
+
 def get_item_id(item_name):
     '''to get item id as universalis need item id for the get request'''
-    response = json.loads(requests.get(f'https://xivapi.com/search?string={item_name}').text)
+    response = json.loads(requests.get(f'https://xivapi.com/search?string={item_name}').text)['Results']
+    response = [x for x in response if x[URL_TYPE] == ITEM_TYPE]
     ids = {}
-    for result in response['Results']:
+
+    for result in response:
         ids[result['Name']] = result['ID']
     item_id = ids[item_name]
     return str(item_id)
