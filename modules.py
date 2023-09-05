@@ -9,6 +9,7 @@ from datetime import datetime, timezone, timedelta
 import statistics
 import constants
 from ingredient import Ingredient
+from crafting_graph import find_cheapest_way
 
 def get_item_id(item_name):
     '''to get item id as universalis need item id for the get request'''
@@ -119,10 +120,12 @@ if __name__ == '__main__':
    #print(get_recipe_id("not an item!"))
     root = fetch_recipe_data(get_recipe_id("Baked Eggplant"), get_recipe_id, fetch_item_price, get_item_id)
     Ingredient.print_tree(root)
-    dictify = root.to_dict()
+    dictify = root.to_dict_quantity()
     dictify_price = root.to_dict_price()
     print("----")
     print(dictify)
     print("----")
     print(dictify_price)
+    target_item = 'Baked Eggplant'
+    groceries_list = find_cheapest_way(dictify_price, target_item, verbose=True)
     #get_item_name(35593)

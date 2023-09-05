@@ -9,7 +9,7 @@ class Ingredient:
         self.parent = parent
 
     def add_child_predefined(self, child):
-        if child is not None:  # Check if child is not None
+        if child is not None: 
             child.parent = self
             self.children.append(child)
         
@@ -17,7 +17,7 @@ class Ingredient:
         new_child = Ingredient(recipe_id, item_id, quantity, price, name, parent=self)
         self.children.append(new_child)
 
-    def print_tree(self, indent=""): #DFS? idk
+    def print_tree(self, indent=""):
         if self.parent is None:
             parent = "Root"
         else:
@@ -26,7 +26,7 @@ class Ingredient:
         for child in self.children:
             child.print_tree(indent + "       ")
 
-    def to_dict(self):
+    def to_dict_quantity(self):
         result = {
             self.name: {
                 child.name: child.quantity
@@ -48,7 +48,7 @@ class Ingredient:
     def to_dict_price(self):
         result = {
             self.name: {
-                child.name: child.price
+                child.name: child.price[1] # [1] is the actual price, [0] is the server.
                 for child in self.children
             }
         }
@@ -56,7 +56,26 @@ class Ingredient:
         if self.children:
             for child in self.children:
                 child_dict = {
-                    subchild.name: subchild.price
+                    subchild.name: subchild.price[1]
+                    for subchild in child.children
+                }
+                if child_dict:
+                    result[child.name] = child_dict
+
+        return result
+    
+    def to_dict_server(self):
+        result = {
+            self.name: {
+                child.name: child.price[0] # [1] is the actual price, [0] is the server.
+                for child in self.children
+            }
+        }
+
+        if self.children:
+            for child in self.children:
+                child_dict = {
+                    subchild.name: subchild.price[0]
                     for subchild in child.children
                 }
                 if child_dict:
