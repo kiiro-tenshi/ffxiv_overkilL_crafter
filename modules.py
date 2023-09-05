@@ -107,7 +107,7 @@ def fetch_item_price(item_id, time_window_minutes):
                     median_price = statistics.median(prices)
                     mad_price = statistics.median([abs(price - median_price) for price in prices])
                     filtered_prices = [price for price in prices if abs(price - median_price) <= 3*mad_price]
-                    average_price = statistics.mean(filtered_prices)
+                    average_price = round(statistics.mean(filtered_prices))
                     price_dict[world] = {'num_transaction': num_transaction, 'average_price': average_price}
         except:
                 price_dict[world] = {'num_transaction': -1, 'average_price': 0}
@@ -119,5 +119,10 @@ if __name__ == '__main__':
    #print(get_recipe_id("not an item!"))
     root = fetch_recipe_data(get_recipe_id("Baked Eggplant"), get_recipe_id, fetch_item_price, get_item_id)
     Ingredient.print_tree(root)
+    dictify = root.to_dict()
+    dictify_price = root.to_dict_price()
     print("----")
+    print(dictify)
+    print("----")
+    print(dictify_price)
     #get_item_name(35593)

@@ -24,4 +24,42 @@ class Ingredient:
             parent = self.parent.name
         print(f"{indent}{self.name}, Item ID: {self.item_id}, Recipe ID: {self.recipe_id}, Quantity: {self.quantity}, Price: {self.price}, Parent: {parent}\n")
         for child in self.children:
-            child.print_tree(indent + "       ") 
+            child.print_tree(indent + "       ")
+
+    def to_dict(self):
+        result = {
+            self.name: {
+                child.name: child.quantity
+                for child in self.children
+            }
+        }
+
+        if self.children:
+            for child in self.children:
+                child_dict = {
+                    subchild.name: subchild.quantity
+                    for subchild in child.children
+                }
+                if child_dict:
+                    result[child.name] = child_dict
+
+        return result
+    
+    def to_dict_price(self):
+        result = {
+            self.name: {
+                child.name: child.price
+                for child in self.children
+            }
+        }
+
+        if self.children:
+            for child in self.children:
+                child_dict = {
+                    subchild.name: subchild.price
+                    for subchild in child.children
+                }
+                if child_dict:
+                    result[child.name] = child_dict
+
+        return result
