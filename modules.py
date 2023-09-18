@@ -1,7 +1,7 @@
 """
 Created on Fri Sep  1 01:47:18 2023
 
-@author: Kiiro Tenshi
+@author: Kiiro Tenshi ♥ Inanna Tenshi 
 """
 
 import requests, json
@@ -65,8 +65,9 @@ def fetch_recipe_data(recipe_id, get_recipe_id_func, fetch_item_price_func, get_
         response = fetch_recipe(recipe_id)
         recipe_name = response[constants.ENG_NAME]
         assert str(item_id) == str(response[constants.ITEM_ID_RECIPE])
-        price = minimize_price(fetch_item_price_func(item_id, constants.TIME_UNIVERSALIS))  
-        current_ingredient = Ingredient(recipe_id, item_id, quantity, price, recipe_name, parent=parent)
+        amount_result = response[constants.AMOUNT_RESULT]
+        price = minimize_price(fetch_item_price_func(item_id, constants.TIME_UNIVERSALIS))
+        current_ingredient = Ingredient(recipe_id, item_id, quantity, price, recipe_name, parent=parent, amount_result=amount_result)
         #go through the list of ingredients and add them as children
         for i in range(constants.MAX_QUANTITY_INGREDIENTS):
             if response[constants.ITEM_INGREDIENT + str(i)] is not None:
@@ -77,9 +78,9 @@ def fetch_recipe_data(recipe_id, get_recipe_id_func, fetch_item_price_func, get_
                 idx_item_id = get_item_id_func(response[constants.ITEM_INGREDIENT + str(i)][constants.ENG_NAME])
                 idx_price = minimize_price(fetch_item_price_func(idx_item_id, constants.TIME_UNIVERSALIS))
                 if int(idx_recipe_id) == -1: #no recipe, add the ingredient.
-                    current_ingredient.add_child(idx_recipe_id, idx_item_id, idx_amount_ingredient, idx_price, idx_ingredient_name, parent=current_ingredient)
-                else:
-                    next_child = build_tree(idx_recipe_id, idx_item_id, idx_amount_ingredient, parent=current_ingredient)
+                    current_ingredient.add_child(idx_recipe_id, idx_item_id, (current_ingredient.quantity * idx_amount_ingredient), idx_price, idx_ingredient_name, parent=current_ingredient)
+                else: #it is a recipe
+                    next_child = build_tree(idx_recipe_id, idx_item_id, (current_ingredient.quantity * idx_amount_ingredient), parent=current_ingredient)
                     current_ingredient.add_child_predefined(next_child) 
         return current_ingredient
     response = fetch_recipe(recipe_id)

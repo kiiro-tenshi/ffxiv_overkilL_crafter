@@ -13,3 +13,4 @@ ITEM_NONE = 'Empty'
 TIME_UNIVERSALIS = 1440
 ERROR_DETECT = 'Error'
 API_TRUE = 'true'
+AMOUNT_RESULT = 'AmountResult'
