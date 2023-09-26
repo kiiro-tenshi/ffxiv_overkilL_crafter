@@ -97,7 +97,7 @@ def fetch_item_price(item_id, time_window_minutes):
     price_dict = {}
     for world in world_list:
         try:
-            requests_cache.install_cache(expire_after=timedelta(weeks=36))
+            requests_cache.install_cache(expire_after=timedelta(hours=2))
             response = requests.get(f'https://universalis.app/api/v2/history/{world}/{item_id}').text
             json_response = json.loads(response)
             if 'lastUploadTime' not in json_response:
