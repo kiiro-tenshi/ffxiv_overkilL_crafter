@@ -5,6 +5,7 @@ Created on Fri Sep  1 01:47:18 2023
 """
 
 import requests, json
+import requests_cache
 from datetime import datetime, timezone, timedelta
 import statistics
 import constants
@@ -12,6 +13,7 @@ from ingredient import Ingredient
 
 def get_item_id(item_name):
     '''to get item id as universalis need item id for the get request'''
+    requests_cache.install_cache(expire_after=timedelta(weeks=36))
     response = json.loads(requests.get(f'https://xivapi.com/search?string={item_name}').text)['Results']
     response = [x for x in response if x[constants.URL_TYPE] == constants.ITEM_TYPE]
     ids = {}
@@ -24,12 +26,14 @@ def get_item_name(item_id):
     '''There should only be one item per item_id, so a list is never returned from the request.'''
     if item_id == -1:
         return constants.ITEM_NONE
+    requests_cache.install_cache(expire_after=timedelta(weeks=36))
     response = json.loads(requests.get(f'https://xivapi.com/item/{item_id}').text)[constants.ENG_NAME]
     return str(response)
 
 def get_recipe_id(item_name):
     '''this *does* assume the item name is correct or unexpected behaviour may occur!'''
     try:
+        requests_cache.install_cache(expire_after=timedelta(weeks=36))
         response = json.loads(requests.get(f'https://xivapi.com/search?string={item_name}').text)['Results']
         response = [x for x in response if x[constants.URL_TYPE] == constants.RECIPE_TYPE]
         ids = {}
@@ -42,6 +46,7 @@ def get_recipe_id(item_name):
 
 def fetch_recipe_data(recipe_id, get_recipe_id_func, fetch_item_price_func, get_item_id_func):
     def fetch_recipe(recipe_id):
+        requests_cache.install_cache(expire_after=timedelta(weeks=36))
         response = json.loads(requests.get(f'https://xivapi.com/recipe/{recipe_id}?').text)
         return response
 
@@ -92,6 +97,7 @@ def fetch_item_price(item_id, time_window_minutes):
     price_dict = {}
     for world in world_list:
         try:
+            requests_cache.install_cache(expire_after=timedelta(weeks=36))
             response = requests.get(f'https://universalis.app/api/v2/history/{world}/{item_id}').text
             json_response = json.loads(response)
             if 'lastUploadTime' not in json_response:
