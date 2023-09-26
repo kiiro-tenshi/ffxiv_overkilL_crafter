@@ -7,8 +7,12 @@ Created on Fri Sep  1 09:42:30 2023
 
 import networkx as nx
 import matplotlib.pyplot as plt
+from modules import get_margin
 
-def find_cheapest_way(materials_dict, target_item, verbose=False):
+def find_cheapest_way(materials_dict, target_item, target_world, verbose=False):
+    #split dictionary
+    crafted_quantity = materials_dict['crafted_quantity']
+    materials_dict = {key: value for key, value in materials_dict.items() if key not in ['crafted_quantity']}
     #get dictionary of world to buy the items
     world_dict = {}
     for item, sub_dict in materials_dict.items():
@@ -41,7 +45,8 @@ def find_cheapest_way(materials_dict, target_item, verbose=False):
                                                    'world': world_dict[cheapest_way[i]]}  
         total_cost += cost
     groceries_list['total_cost_per_craft'] = total_cost
-    
+    groceries_list['crafted_quantity'] = crafted_quantity
+    groceries_list['expected_margin'] = get_margin(target_item, target_world, total_cost/crafted_quantity)
     # Visualization
     if verbose:
         pos = nx.spring_layout(G, seed=42)
@@ -53,8 +58,9 @@ def find_cheapest_way(materials_dict, target_item, verbose=False):
     return groceries_list
 
 if __name__ == '__main__':
-    materials_dict = {'Baked Eggplant': {'Dark Eggplant': ['Faerie', 962], 'Garlean Cheese': ['Gilgamesh', 990], 'Frantoio Oil': ['Gilgamesh', 523], 'Giant Popoto': ['Jenova', 229], 'Blood Tomato': ['Midgardsormr', 282], 'Earthbreak Aethersand': ['Gilgamesh', 931]}, 'Garlean Cheese': {'Ovibos Milk': ['Faerie', 405]}, 'Frantoio Oil': {'Frantoio': ['Midgardsormr', 286]}}
+    materials_dict = {'Baked Eggplant': {'Dark Eggplant': ['Faerie', 962], 'Garlean Cheese': ['Gilgamesh', 990], 'Frantoio Oil': ['Gilgamesh', 523], 'Giant Popoto': ['Jenova', 229], 'Blood Tomato': ['Midgardsormr', 282], 'Earthbreak Aethersand': ['Gilgamesh', 931]}, 'Garlean Cheese': {'Ovibos Milk': ['Faerie', 405]}, 'Frantoio Oil': {'Frantoio': ['Midgardsormr', 286],},
+                      'crafted_quantity': 3}
     target_item = 'Baked Eggplant'
-
-    groceries_list = find_cheapest_way(materials_dict, target_item, verbose=True)
+    target_world = 'Jenova'
+    groceries_list = find_cheapest_way(materials_dict, target_item, target_world, verbose=True)
     # print(groceries_list)
