@@ -49,7 +49,7 @@ class Ingredient:
     def to_dict_price(self):
         result = {
             self.name: {
-                child.name: [child.price[0], child.price[1]]# [1] is the actual price, [0] is the server.
+                child.name: [child.price[0], child.price[1]*child.quantity]# [1] is the actual price, [0] is the server.
                 for child in self.children
             }
         }
@@ -57,7 +57,7 @@ class Ingredient:
         if self.children:
             for child in self.children:
                 child_dict = {
-                    subchild.name: [subchild.price[0], subchild.price[1]]
+                    subchild.name: [subchild.price[0], subchild.price[1]*subchild.quantity]
                     for subchild in child.children
                 }
                 if child_dict:
