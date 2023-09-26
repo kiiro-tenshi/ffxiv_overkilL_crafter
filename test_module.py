@@ -2,7 +2,7 @@ from modules import *
 from crafting_graph import *
 
 if __name__ == '__main__':
-    target_item = 'Baked Eggplant'
+    target_item = 'Grade 8 Tincture of Strength'
     target_world = 'Jenova'
     #item_id = get_item_id('Ovibos Milk')
    #price_dict = fetch_item_price(item_id, 30)
@@ -15,6 +15,6 @@ if __name__ == '__main__':
     print(dictify)
     print("----")
     print(dictify_price)
-    groceries_list = find_cheapest_way(dictify_price, target_item, target_world, verbose=True)
-    print(groceries_list)
+    results = find_cheapest_way(dictify_price, target_item, target_world, verbose=True)
+    print(results)
     # get_item_name(35593)
