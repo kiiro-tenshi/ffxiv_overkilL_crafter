@@ -40,7 +40,7 @@ def find_cheapest_way(materials_dict, target_item, verbose=False):
                 groceries_list[cheapest_way[i]] = {'cost': cost,'step': cheapest_way[i:], 
                                                    'world': world_dict[cheapest_way[i]]}  
         total_cost += cost
-    groceries_list['total_cost'] = total_cost
+    groceries_list['total_cost_per_craft'] = total_cost
     
     # Visualization
     if verbose:
