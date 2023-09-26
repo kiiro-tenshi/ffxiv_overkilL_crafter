@@ -92,8 +92,8 @@ def fetch_recipe_data(recipe_id, get_recipe_id_func, fetch_item_price_func, get_
     root = build_tree(recipe_id, item_id, 1)
     return root
 
-def fetch_item_price(item_id, time_window_minutes):
-    world_list = ['Jenova', 'Adamantoise', 'Cactuar', 'Faerie', 'Gilgamesh', 'Midgardsormr', 'Sargatanas', 'Siren']
+def fetch_item_price(item_id, time_window_minutes, 
+                     world_list=['Jenova', 'Adamantoise', 'Cactuar', 'Faerie', 'Gilgamesh', 'Midgardsormr', 'Sargatanas', 'Siren']):
     price_dict = {}
     for world in world_list:
         try:
@@ -120,3 +120,8 @@ def fetch_item_price(item_id, time_window_minutes):
                 price_dict[world] = {'num_transaction': -1, 'average_price': 0}
     return price_dict
 
+def get_margin(target_item, target_world, cost_per_unit):
+    item_id = get_item_id(target_item)
+    price = fetch_item_price(item_id, constants.TIME_UNIVERSALIS, [target_world])[target_world]['average_price']
+    margin = round((price-cost_per_unit)/cost_per_unit, 2)
+    return margin
