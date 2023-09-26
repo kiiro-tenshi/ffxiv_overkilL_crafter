@@ -43,7 +43,6 @@ class Ingredient:
                 }
                 if child_dict:
                     result[child.name] = child_dict
-
         return result
     
     def to_dict_price(self):
@@ -62,7 +61,7 @@ class Ingredient:
                 }
                 if child_dict:
                     result[child.name] = child_dict
-
+        result['crafted_quantity'] = self.amount_result
         return result
     
     def to_dict_server(self):
