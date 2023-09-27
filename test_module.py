@@ -16,5 +16,6 @@ if __name__ == '__main__':
     print("----")
     print(dictify_price)
     results = find_cheapest_way(dictify_price, target_item, target_world, verbose=True)
-    print(results)
+    print_shopping_list(results)
+    #create_shopping_list_image(results, 'shopping_list.png')
     # get_item_name(35593)

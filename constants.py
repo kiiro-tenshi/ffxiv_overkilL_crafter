@@ -2,7 +2,7 @@ ITEM_TYPE = 'Item'
 RECIPE_TYPE = 'Recipe'
 URL_TYPE = 'UrlType'
 
-# There are at most ten ingredients for any given recipe.
+# There are at most eight ingredients for any given recipe.
 MAX_QUANTITY_INGREDIENTS = 8
 AMOUNT_INGREDIENT = 'AmountIngredient'
 ITEM_INGREDIENT = 'ItemIngredient'
@@ -14,3 +14,4 @@ TIME_UNIVERSALIS = 1440
 ERROR_DETECT = 'Error'
 API_TRUE = 'true'
 AMOUNT_RESULT = 'AmountResult'
+RESOLUTION_SCALING = 2

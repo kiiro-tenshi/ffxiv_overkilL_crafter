@@ -58,6 +58,45 @@ def find_cheapest_way(materials_dict, target_item, target_world, verbose=False):
 
     return results
 
+
+def create_shopping_list(data):
+    shopping_list = []
+    for item_name, item_data in data['groceries_list'].items():
+        item_info = {
+            'Item Name': item_name,
+            'Cost': item_data['cost'],
+            'World': item_data['world'],
+            'Crafting Steps': ' -> '.join(item_data['step'])
+        }
+        shopping_list.append(item_info)
+
+        additional_info = {
+            'Total Cost per Craft': f"{data['total_cost_per_craft']} Gil", 
+            'Crafted Quantity per Craft': data['crafted_quantity'],
+            'Expected Margin': f"{data['expected_margin'] * 100:.2f}%"  
+        }
+
+    return shopping_list, additional_info
+
+def print_shopping_list(data):
+    shopping_list, additional_info = create_shopping_list(data)
+    # Print the shopping list
+    print("Shopping List")
+    for item in shopping_list:
+        print(f"{item['Item Name']}:")
+        print(f"  - Cost: {item['Cost']} Gil")
+        print(f"  - World: {item['World']}")
+        print(f"  - Crafting Steps: {item['Crafting Steps']}")
+        print()
+
+    print("Summary Information")
+    for key, value in additional_info.items():
+        print(f"{key}: {value}")
+
+
+
+
+
 if __name__ == '__main__':
     materials_dict = {'Baked Eggplant': {'Dark Eggplant': ['Faerie', 962], 'Garlean Cheese': ['Gilgamesh', 990], 'Frantoio Oil': ['Gilgamesh', 523], 'Giant Popoto': ['Jenova', 229], 'Blood Tomato': ['Midgardsormr', 282], 'Earthbreak Aethersand': ['Gilgamesh', 931]}, 'Garlean Cheese': {'Ovibos Milk': ['Faerie', 405]}, 'Frantoio Oil': {'Frantoio': ['Midgardsormr', 286],},
                       'crafted_quantity': 3}
